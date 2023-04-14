@@ -1,0 +1,115 @@
+class Nodo:
+    def __init__(self, id, descripcion):
+        self.id = id
+        self.descripcion = descripcion
+        self.izquierda = None
+        self.derecha = None
+
+class ListaCircularDobleEnlazada:
+    def __init__(self):
+        self.cabeza = None
+    
+    def agregar_nodo(self, id, descripcion):
+        nuevo_nodo = Nodo(id, descripcion)
+        
+        if self.cabeza is None:
+            nuevo_nodo.izquierda = nuevo_nodo
+            nuevo_nodo.derecha = nuevo_nodo
+            self.cabeza = nuevo_nodo
+        else:
+            ultimo_nodo = self.cabeza.izquierda
+            ultimo_nodo.derecha = nuevo_nodo
+            nuevo_nodo.izquierda = ultimo_nodo
+            nuevo_nodo.derecha = self.cabeza
+            self.cabeza.izquierda = nuevo_nodo
+            
+    def eliminar_nodo(self, id):
+        nodo_actual = self.cabeza
+        
+        while nodo_actual is not None:
+            if nodo_actual.id == id:
+                if nodo_actual is self.cabeza:
+                    if nodo_actual.derecha is self.cabeza:
+                        self.cabeza = None
+                    else:
+                        self.cabeza = nodo_actual.derecha
+                
+                nodo_actual.izquierda.derecha = nodo_actual.derecha
+                nodo_actual.derecha.izquierda = nodo_actual.izquierda
+                return True
+            
+            nodo_actual = nodo_actual.derecha
+            if nodo_actual is self.cabeza:
+                break
+        
+        return False
+    
+    def imprimir_lista(self):
+        if self.cabeza is None:
+            print("La lista está vacía")
+        else:
+            nodo_actual = self.cabeza
+            while True:
+                print(f"ID: {nodo_actual.id}, Descripción: {nodo_actual.descripcion}")
+                nodo_actual = nodo_actual.derecha
+                if nodo_actual is self.cabeza:
+                    break
+--------------------------------------------------
+
+import graphviz
+
+class Nodo:
+    def __init__(self, id, descripcion):
+        self.id = id
+        self.descripcion = descripcion
+        self.izquierda = None
+        self.derecha = None
+        self.arriba = None
+        self.abajo = None
+
+class MatrizDeListasDoblementeEnlazadas:
+    def __init__(self, filas, columnas):
+        self.filas = filas
+        self.columnas = columnas
+        self.matriz = [[None for j in range(columnas)] for i in range(filas)]
+        
+        for i in range(filas):
+            for j in range(columnas):
+                nodo = Nodo(i, j)
+                self.matriz[i][j] = nodo
+                
+                if j > 0:
+                    nodo.izquierda = self.matriz[i][j-1]
+                    self.matriz[i][j-1].derecha = nodo
+                
+                if i > 0:
+                    nodo.arriba = self.matriz[i-1][j]
+                    self.matriz[i-1][j].abajo = nodo
+    
+    def obtener_nodo(self, fila, columna):
+        return self.matriz[fila][columna]
+    
+    def imprimir_matriz(self):
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                nodo_actual = self.matriz[i][j]
+                print(f"[{nodo_actual.id},{nodo_actual.descripcion}]", end="")
+                while nodo_actual.derecha is not None:
+                    nodo_actual = nodo_actual.derecha
+                    print(f" <-> [{nodo_actual.id},{nodo_actual.descripcion}]", end="")
+            print("")
+    
+    def imprimir_matriz_svg(self, nombre_archivo):
+        g = graphviz.Digraph(format='svg')
+        
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                nodo_actual = self.matriz[i][j]
+                g.node(f"{nodo_actual.id},{nodo_actual.descripcion}", label=f"[{nodo_actual.id},{nodo_actual.descripcion}]")
+                if nodo_actual.derecha is not None:
+                    g.edge(f"{nodo_actual.id},{nodo_actual.descripcion}", f"{nodo_actual.derecha.id},{nodo_actual.derecha.descripcion}")
+                if nodo_actual.abajo is not None:
+                    g.edge(f"{nodo_actual.id},{nodo_actual.descripcion}", f"{nodo_actual.abajo.id},{nodo_actual.abajo.descripcion}")
+        
+        g.render(nombre_archivo, view=True)
+

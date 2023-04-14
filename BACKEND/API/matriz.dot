@@ -1,0 +1,25 @@
+digraph G {
+node[shape=box];
+Mt[ label = "Matrix", width = 1.5, style = filled, fillcolor = firebrick1, group = 1 ];
+L1 [label = "1"    pos = "5.3,3.5!" width = 1.5 style = filled, fillcolor = bisque1, group = 1 ];
+L1 [label = "1"    pos = "5.3,3.5!" width = 1.5 style = filled, fillcolor = bisque1, group = 1 ];
+L2 [label = "2"    pos = "5.3,3.5!" width = 1.5 style = filled, fillcolor = bisque1, group = 1 ];
+Mt -> L1;
+L1 -> L2;
+
+H1 [label = "1"    pos = "5.3,3.5!" width = 1.5 style = filled, fillcolor = lightskyblue, group = 2 ];
+H2 [label = "2"    pos = "5.3,3.5!" width = 1.5 style = filled, fillcolor = lightskyblue, group = 3 ];
+H5 [label = "5"    pos = "5.3,3.5!" width = 1.5 style = filled, fillcolor = lightskyblue, group = 6 ];
+Mt -> H1;
+H1 -> H2;
+H2 -> H5;
+{ rank = same; Mt; H1; H2; H5; };
+
+NODO21[label = "salon:2
+Horario:1
+Taller 1" width = 1.5, group = 3 ];
+ NODO12[label = "salon:1
+Horario:2
+Taller 1" width = 1.5, group = 2 ];
+ 
+}

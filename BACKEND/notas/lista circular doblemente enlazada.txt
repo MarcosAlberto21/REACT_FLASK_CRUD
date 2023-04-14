@@ -1,0 +1,40 @@
+class Nodo:
+    def __init__(self, id, descripcion):
+        self.id = id
+        self.descripcion = descripcion
+        self.izquierda = None
+        self.derecha = None
+        self.arriba = None
+        self.abajo = None
+
+class MatrizDeListasDoblementeEnlazadas:
+    def __init__(self, filas, columnas):
+        self.filas = filas
+        self.columnas = columnas
+        self.matriz = [[None for j in range(columnas)] for i in range(filas)]
+        
+        for i in range(filas):
+            for j in range(columnas):
+                nodo = Nodo(i, j)
+                self.matriz[i][j] = nodo
+                
+                if j > 0:
+                    nodo.izquierda = self.matriz[i][j-1]
+                    self.matriz[i][j-1].derecha = nodo
+                
+                if i > 0:
+                    nodo.arriba = self.matriz[i-1][j]
+                    self.matriz[i-1][j].abajo = nodo
+    
+    def obtener_nodo(self, fila, columna):
+        return self.matriz[fila][columna]
+    
+    def imprimir_matriz(self):
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                nodo_actual = self.matriz[i][j]
+                print(f"[{nodo_actual.id},{nodo_actual.descripcion}]", end="")
+                while nodo_actual.derecha is not None:
+                    nodo_actual = nodo_actual.derecha
+                    print(f" <-> [{nodo_actual.id},{nodo_actual.descripcion}]", end="")
+            print("")

@@ -1,0 +1,50 @@
+class Nodo:
+    def __init__(self, id, descripcion):
+        self.id = id
+        self.descripcion = descripcion
+        self.izquierda = None
+        self.derecha = None
+
+class ListaDobleEnlazada:
+    def __init__(self):
+        self.cabeza = None
+        self.cola = None
+    
+    def agregar_nodo(self, id, descripcion):
+        nuevo_nodo = Nodo(id, descripcion)
+        
+        if self.cabeza is None:
+            self.cabeza = nuevo_nodo
+            self.cola = nuevo_nodo
+        else:
+            nuevo_nodo.izquierda = self.cola
+            self.cola.derecha = nuevo_nodo
+            self.cola = nuevo_nodo
+            
+    def eliminar_nodo(self, id):
+        nodo_actual = self.cabeza
+        
+        while nodo_actual is not None:
+            if nodo_actual.id == id:
+                if nodo_actual.izquierda is not None:
+                    nodo_actual.izquierda.derecha = nodo_actual.derecha
+                else:
+                    self.cabeza = nodo_actual.derecha
+                
+                if nodo_actual.derecha is not None:
+                    nodo_actual.derecha.izquierda = nodo_actual.izquierda
+                else:
+                    self.cola = nodo_actual.izquierda
+                
+                return True
+            
+            nodo_actual = nodo_actual.derecha
+        
+        return False
+    
+    def imprimir_lista(self):
+        nodo_actual = self.cabeza
+        
+        while nodo_actual is not None:
+            print(f"ID: {nodo_actual.id}, Descripción: {nodo_actual.descripcion}")
+            nodo_actual = nodo_actual.derecha

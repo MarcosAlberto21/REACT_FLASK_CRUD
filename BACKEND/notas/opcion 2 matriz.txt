@@ -1,0 +1,75 @@
+from graphviz import Digraph
+
+class Nodo:
+    def __init__(self, fila, columna):
+        self.fila = fila
+        self.columna = columna
+        self.arriba = None
+        self.abajo = None
+        self.izquierda = None
+        self.derecha = None
+    
+class MatrizDeListasDoblementeEnlazadas:
+    def __init__(self, filas, columnas):
+        self.filas = filas
+        self.columnas = columnas
+        self.nodos = {}
+        
+        for i in range(filas):
+            for j in range(columnas):
+                nodo = Nodo(i, j)
+                self.nodos[(i, j)] = nodo
+                
+                if i > 0:
+                    nodo.arriba = self.nodos[(i-1, j)]
+                    self.nodos[(i-1, j)].abajo = nodo
+                
+                if j > 0:
+                    nodo.izquierda = self.nodos[(i, j-1)]
+                    self.nodos[(i, j-1)].derecha = nodo
+    
+    def obtener_nodo(self, fila, columna):
+        return self.nodos[(fila, columna)]
+    
+    def eliminar_nodo(self, fila, columna):
+        nodo_a_eliminar = self.nodos[(fila, columna)]
+        
+        # Enlazar nodos adyacentes
+        if nodo_a_eliminar.arriba:
+            nodo_a_eliminar.arriba.abajo = nodo_a_eliminar.abajo
+        if nodo_a_eliminar.abajo:
+            nodo_a_eliminar.abajo.arriba = nodo_a_eliminar.arriba
+        if nodo_a_eliminar.izquierda:
+            nodo_a_eliminar.izquierda.derecha = nodo_a_eliminar.derecha
+        if nodo_a_eliminar.derecha:
+            nodo_a_eliminar.derecha.izquierda = nodo_a_eliminar.izquierda
+        
+        # Eliminar nodo del diccionario
+        del self.nodos[(fila, columna)]
+    
+    def imprimir_matriz(self):
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                nodo_actual = self.nodos[(i, j)]
+                print(f"[{nodo_actual.fila},{nodo_actual.columna}]", end="")
+                while nodo_actual.derecha is not None:
+                    nodo_actual = nodo_actual.derecha
+                    print(f" <-> [{nodo_actual.fila},{nodo_actual.columna}]", end="")
+            print("")
+    
+    def graficar_matriz(self):
+        dot = Digraph(comment="Matriz de listas doblemente enlazadas")
+        dot.attr(rankdir="LR")
+        
+        # Crear nodos
+        for nodo in self.nodos.values():
+            dot.node(f"({nodo.fila},{nodo.columna})")
+        
+        # Crear enlaces
+        for nodo in self.nodos.values():
+            if nodo.arriba:
+                dot.edge(f"({nodo.fila},{nodo.columna})", f"({nodo.arriba.fila},{nodo.arriba.columna})", dir="both")
+            if nodo.abajo:
+                dot.edge(f"({nodo.fila},{nodo.columna})", f"({nodo.abajo.fila},{nodo.abajo.columna})", dir="both")
+            if nodo.izquierda:
+                dot.edge(f"({nodo.fila},{nodo.columna})", f"({nodo.izquierda.fila},{nodo.iz
